@@ -141,8 +141,6 @@
 </template>
 
 <script>
-import { auth, usersCollection } from '@/includes/firebase';
-
 export default {
   name: 'RegisterForm',
   data() {
@@ -172,25 +170,8 @@ export default {
       this.reg_alert_variant = 'bg-blue-500';
       this.reg_alert_msg = 'Please wait! Yor account is being created.';
 
-      let userCred = null;
       try {
-        userCred = await auth.createUserWithEmailAndPassword(
-          values.email, values.password,
-        );
-      } catch (error) {
-        this.reg_in_submission = false;
-        this.reg_alert_variant = 'bg-red-500';
-        this.reg_alert_msg = `An error occured! ${error.message} Please try again later.`;
-        return;
-      }
-
-      try {
-        await usersCollection.add({
-          name: values.name,
-          email: values.email,
-          age: values.age,
-          country: values.country,
-        });
+        await this.$store.dispatch('register', values);
       } catch (error) {
         this.reg_in_submission = false;
         this.reg_alert_variant = 'bg-red-500';
@@ -200,7 +181,6 @@ export default {
 
       this.reg_alert_variant = 'bg-green-500';
       this.reg_alert_msg = 'Success! Your account is being created.';
-      console.log(userCred);
     },
   },
 };
