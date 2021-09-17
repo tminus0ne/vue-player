@@ -22,6 +22,11 @@
       >
       <h5>Drop your files here</h5>
     </div>
+    <input
+      type="file"
+      multiple
+      @change="upload($event)"
+    />
     <hr class="my-6" />
 
     <!-- Progess Bars -->
@@ -67,7 +72,9 @@ export default {
     upload($event) {
       this.isDragover = false;
 
-      const files = [...$event.dataTransfer.files];
+      const files = $event.dataTransfer
+        ? [...$event.dataTransfer.files]
+        : [...$event.target.files];
 
       files.forEach((file) => {
         if (file.type !== 'audio/mpeg') {
@@ -118,6 +125,16 @@ export default {
       });
       console.log(files);
     },
+    // cancelUploads() {
+    //   this.uploads.forEach((upload) => {
+    //     upload.task.cancel();
+    //   });
+    // },
+  },
+  beforeUnmount() {
+    this.uploads.forEach((upload) => {
+      upload.task.cancel();
+    });
   },
 };
 </script>
