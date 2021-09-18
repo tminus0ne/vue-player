@@ -45,7 +45,7 @@ import AppUpload from '@/components/Upload.vue';
 import CompositionItem from '@/components/CompositionItem.vue';
 
 export default {
-  name: 'manage',
+  name: 'Manage',
   components: {
     AppUpload,
     CompositionItem,
