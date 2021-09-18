@@ -68,6 +68,9 @@ export default {
       uploads: [],
     };
   },
+  props: [
+    'addSong',
+  ],
   methods: {
     upload($event) {
       this.isDragover = false;
@@ -116,14 +119,16 @@ export default {
             };
 
             song.url = await task.snapshot.ref.getDownloadURL();
-            await songsCollection.add(song);
+            const songRef = await songsCollection.add(song);
+            const songSnapshot = await songRef.get();
+
+            this.addSong(songSnapshot);
 
             this.uploads[uploadIndex].variant = 'bg-green-400';
             this.uploads[uploadIndex].icon = 'fas fa-check';
             this.uploads[uploadIndex].textClass = 'text-green-400';
           });
       });
-      console.log(files);
     },
     // cancelUploads() {
     //   this.uploads.forEach((upload) => {
