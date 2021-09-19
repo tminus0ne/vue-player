@@ -7,8 +7,12 @@
     <div class="container mx-auto flex items-center">
 
       <!-- Play/Pause Button -->
-      <button type="button" class="z-50 h-24 w-24 text-3xl bg-white text-black rounded-full
-        focus:outline-none">
+      <button
+        type="button"
+        class="z-50 h-24 w-24 text-3xl bg-white
+        text-black rounded-full focus:outline-none"
+        @click.prevent="newSong(song)"
+      >
         <i class="fas fa-play"></i>
       </button>
       <div class="z-50 text-left ml-8">
@@ -104,7 +108,7 @@
 </template>
 
 <script>
-import { mapState } from 'vuex';
+import { mapState, mapActions } from 'vuex';
 import {
   songsCollection,
   auth,
@@ -128,6 +132,9 @@ export default {
     };
   },
   methods: {
+    ...mapActions([
+      'newSong',
+    ]),
     async getComments() {
       const snapshots = await commentsCollection
         .where('sid', '==', this.$route.params.id)
