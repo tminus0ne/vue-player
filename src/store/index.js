@@ -12,6 +12,7 @@ export default createStore({
     sound: {},
     seek: '00:00',
     duration: '00:00',
+    playerProgress: '0%',
   },
 
   mutations: {
@@ -31,6 +32,8 @@ export default createStore({
     updatePosition(state) {
       state.seek = helper.formatTime(state.sound.seek());
       state.duration = helper.formatTime(state.sound.duration());
+
+      state.playerProgress = `${(state.sound.seek() / state.sound.duration()) * 100}%`;
     },
   },
 
@@ -86,6 +89,10 @@ export default createStore({
       // }
     },
     async newSong({ commit, state, dispatch }, payload) {
+      if (state.sound instanceof Howl) {
+        state.sound.unload();
+      }
+
       commit('newSong', payload);
 
       state.sound.play();
@@ -115,6 +122,22 @@ export default createStore({
           dispatch('progress');
         });
       }
+    },
+    updateSeek({ state, dispatch }, payload) {
+      if (!state.sound.playing) {
+        return;
+      }
+
+      const { x, width } = payload.currentTarget.getBoundingClientRect();
+      const clickX = payload.clientX - x;
+      const percentage = clickX / width;
+      const seconds = state.sound.duration() * percentage;
+
+      state.sound.seek(seconds);
+
+      state.sound.once('seek', () => {
+        dispatch('progress');
+      });
     },
   },
 
